@@ -31,6 +31,7 @@ class ListSms extends Command
      */
     protected $description = 'List sms messages.';
 
+    // Shouldn't hardcode table headings like this.
     private function getTableHeadings() {
         $tableHeadings = ['From', 'To', 'Status', 'Body', 'Created'];
 
@@ -50,6 +51,7 @@ class ListSms extends Command
         return $tableHeadings;
     }
 
+    // build api endpoint url from command options
     private function getApiEndpoint($commandOptions) {
         $endpoint = 'api/messages';
         $queryParams = '';
@@ -66,7 +68,7 @@ class ListSms extends Command
                 $queryParams .= '&' . $key . '=' . $val;
             }   
         }
-        //should be done within the loop.
+        //should be done within the loop. How to get index within foreach loop if you're using the $key
         if (!empty($queryParams)) {
             $queryParams = '?' . substr($queryParams, 1);
         }
@@ -81,8 +83,6 @@ class ListSms extends Command
      */
     public function handle()
     {
-        //what happens with table columns when mixing params? Nothing good
-
         $tableHeadings = $this->getTableHeadings();
         $commandOptions = $this->options();
         $apiEndpoint = $this->getApiEndpoint($commandOptions);
@@ -120,11 +120,6 @@ class ListSms extends Command
             $msgObj = (array) $msgObj;
         }
 
-        
-
-        
-        //Only billable if status = sent
-
         $this->table(
             $tableHeadings,
             $messages
@@ -132,7 +127,6 @@ class ListSms extends Command
 
         if ($this->option('billing')) {
             $this->info('Subtotal sent: $' . number_format(($sendTotal /100), 2, '.', ' '));
-
             $this->info('Subtotal received: $' . number_format(($receiveTotal /100), 2, '.', ' '));    
         }
     }

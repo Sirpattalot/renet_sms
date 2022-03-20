@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 
 use App\Models\User;
 use App\Models\PhoneNumber;
-//use App\Http\Resources\ProductResource;
 
 class UserController extends Controller
 {
@@ -29,9 +28,5 @@ class UserController extends Controller
     public function show($id)
     {
         return User::findOrFail($id);
-    }
-
-    public function phonenumber() {
-        hasOne(PhoneNumber::class);
     }
 }

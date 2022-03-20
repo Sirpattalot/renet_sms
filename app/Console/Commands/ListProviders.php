@@ -32,18 +32,16 @@ class ListProviders extends Command
 
         $endpoint = '/api/smsproviders';
         
-        //dd($endpoint);
         $req = Request::create($endpoint, 'GET');
         $res = app()->handle($req)->getData();
-
-
-
         $providers = $res->data;
 
+        //convert stdClasses to Arrays for table
         foreach ($providers as &$providerObj) {
             $providerObj = (array) $providerObj;
         }
-        
+
+        //shouldn't hardcode table headings
          $this->table(
              ['ID', 'Name', 'Send price', 'Receive price', 'Fail rate'],
              $providers

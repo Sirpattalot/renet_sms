@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Don't a front-end
+
+// Route::get('/', function () {
+//     return view('welcome');
+// });

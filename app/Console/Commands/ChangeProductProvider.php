@@ -13,14 +13,16 @@ class ChangeProductProvider extends Command
      *
      * @var string
      */
-    protected $signature = 'products:changeprovider { product : ID of product} { provider : ID of provider }';
+    protected $signature = 'products:changeprovider 
+                            { product : ID of product} 
+                            { provider : ID of provider }';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Change a products SMS provider';
+    protected $description = 'Change the SMS provider of a product';
 
     /**
      * Execute the console command.
@@ -34,7 +36,6 @@ class ChangeProductProvider extends Command
 
         $endpoint = '/api/products/' . $productId . '/provider';
         
-        //dd($endpoint);
         $req = Request::create($endpoint, 'PUT', ['provider_id' => $providerId]);
         $res = app()->handle($req)->getData();
         $this->info(json_encode($res));

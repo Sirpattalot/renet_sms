@@ -14,6 +14,7 @@ class MessageResource extends JsonResource
      */
     public function toArray($request)
     {
+        //if making a request for billing info, include billing fields.
         if ($request->query('billing')) {
             return [
                 'from' => $this->from,
@@ -23,6 +24,7 @@ class MessageResource extends JsonResource
                 'created_at'=> $this->created_at,
             ];           
         }
+
         //remove id, updated_at, and pricing from API response
         return [
             'from' => $this->from,

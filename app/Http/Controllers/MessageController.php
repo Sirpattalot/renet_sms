@@ -11,6 +11,11 @@ use App\Events\SmsOutbound;
 
 class MessageController extends Controller
 {
+
+    private function buildQueryFromParams() {
+        
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -18,9 +23,9 @@ class MessageController extends Controller
      */
     public function index(Request $request)
     {
+        // Builds the database query from the url params. Messy.
 
         $filters = array();
-
         $query = Message::where([]);
 
         // ?userId=1
@@ -29,6 +34,7 @@ class MessageController extends Controller
             $query->where('to', $phone)->orWhere('from', $phone);
         }
 
+        // ?from=04XXXXX
         if ($request->from) {
             $filters['from'] = $request->from;
         }
@@ -50,6 +56,7 @@ class MessageController extends Controller
 
         //Filter out numbers not associated with any tenants
         //not ideal getting all phone numbers for comparison. Should be apparent in db table.
+
         // ?sent=true
         if ($request->sent) {
             $phone = PhoneNumber::pluck('number');
@@ -72,14 +79,15 @@ class MessageController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    
     public function store(Request $request)
     {
         //Check phone number exists, then get associated sms-provider.
         //Store the message locally before dispatch event for smsprovider.
 
-        
+    
         $phone = PhoneNumber::where('number', $request->from)->first();
-        
+
         if (empty($phone)) {
             return response()->json([
                 'error' => 'Phone number of sender does not exist.'
@@ -93,8 +101,7 @@ class MessageController extends Controller
         //get current sms provider from product
         $smsProviderId = $product->provider_id;
 
-        // send message to sms provider
-
+        // save message
         $message = new Message;
         $message->from = $request->from;
         $message->to = $request->to;

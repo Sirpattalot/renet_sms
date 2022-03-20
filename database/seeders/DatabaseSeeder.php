@@ -54,56 +54,80 @@ class DatabaseSeeder extends Seeder
             'product_id' => $crmProd->id
         ]);
 
+        User::factory()->create([
+            'name' => 'John Doe',
+            'password' => bcrypt('password'),
+            'product_id' => $crmProd->id
+        ]);
+
 
         User::factory()->create([
-            'name' => 'Lucy Hume',
+            'name' => 'Alice Jones',
+            'password' => bcrypt('password'),
+            'product_id' => $syncProd->id
+        ]);
+
+        User::factory()->create([
+            'name' => 'Bob Black',
             'password' => bcrypt('password'),
             'product_id' => $syncProd->id
         ]);
 
         PhoneNumber::create([
-            'number' => '0478538265',
+            'number' => '0478538266',
             'user_id' => 1,
-            'product_id' => $twilio->id
+            'product_id' => $plivo->id
         ]);
 
         PhoneNumber::create([
-            'number' => '0420364395',
+            'number' => '0420364396',
             'user_id' => 2,
             'product_id' => $plivo->id
         ]);
 
-        Message::create([
-            'from' => '0420364395',
-            'to' => '0478538265',
-            'status' => 'sent'  ,
-            'body' => 'Hi there, how have you been?',
-            'provider_id' => $twilio->id,
-            'send_price' => $plivo->send_price,
-            'receive_price' => $twilio->receive_price,
-            'product_id' => 2
+        PhoneNumber::create([
+            'number' => '0417272427',
+            'user_id' => 3,
+            'product_id' => $twilio->id
         ]);
 
-        Message::create([
-            'from' => '0478538265',
-            'to' => '0420364395',
-            'status' => 'sent'  ,
-            'body' => 'Been well thanks, how about yourself?',
-            'provider_id' => $plivo->id,
-            'send_price' => $twilio->send_price,
-            'receive_price' => $plivo->receive_price,
-            'product_id' => 1
+        PhoneNumber::create([
+            'number' => '0412345678',
+            'user_id' => 4,
+            'product_id' => $twilio->id
         ]);
 
-        Message::create([
-            'from' => '00000',
-            'to' => '0420364395',
-            'status' => 'sent'  ,
-            'body' => 'Blahblah',
-            'provider_id' => $plivo->id,
-            'send_price' => 0,
-            'receive_price' => $plivo->receive_price,
-            'product_id' => 1
-        ]);
+        // Message::create([
+        //     'from' => '0420364396',
+        //     'to' => '0478538266',
+        //     'status' => 'sent'  ,
+        //     'body' => 'Hi there, how are you?',
+        //     'provider_id' => $plivo->id,
+        //     'send_price' => $plivo->send_price,
+        //     'receive_price' => $plivo->receive_price,
+        //     'product_id' => 2
+        // ]);
+
+        // Message::create([
+        //     'from' => '0478538266',
+        //     'to' => '0417272427',
+        //     'status' => 'sent'  ,
+        //     'body' => 'Reminder: appointment tomorrow at 9am.',
+        //     'provider_id' => $plivo->id,
+        //     'send_price' => $plivo->send_price,
+        //     'receive_price' => $twilio->receive_price,
+        //     'product_id' => 1
+        // ]);
+
+        // Message::create([
+        //     'from' => '0412123123',
+        //     'to' => '0420364396',
+        //     'status' => 'sent'  ,
+        //     'body' => 'Testing 1,2,3',
+        //     'provider_id' => $plivo->id,
+        //     'send_price' => 0,
+        //     'receive_price' => $plivo->receive_price,
+        //     'product_id' => 1
+        // ]);
     }
 }

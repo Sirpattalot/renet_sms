@@ -25,9 +25,10 @@ class SendSms extends Command
      *
      * @var string
      */
-    protected $description = 'Send SMS from tenant';
+    protected $description = 'Send SMS';
 
 
+    //Checks that the 'from' number is actually associated with a tenant/user
     private function isFromNumberValid($from) {
         $sender = PhoneNumber::where('number', $from)->first();
         if (empty($sender)) {

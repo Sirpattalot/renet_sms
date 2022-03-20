@@ -34,6 +34,6 @@ Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{id}', [ProductController::class, 'show']);
 Route::put('/products/{id}/provider', [ProductController::class, 'updateProvider']);
 
+//Playing with apiResource.
 Route::apiResource('users', UserController::class)->only('index', 'show');
-
 Route::apiResource('smsproviders', SmsProviderController::class)->only('index');

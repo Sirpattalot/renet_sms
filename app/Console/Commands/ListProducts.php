@@ -32,14 +32,11 @@ class ListProducts extends Command
 
         $endpoint = '/api/products';
         
-        //dd($endpoint);
         $req = Request::create($endpoint, 'GET');
         $res = app()->handle($req)->getData();
-
-
-
         $products = $res->data;
 
+        //convert stdClasses to Arrays for table
         foreach ($products as &$msgObj) {
             $msgObj = (array) $msgObj;
         }
