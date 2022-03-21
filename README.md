@@ -7,58 +7,65 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+## About
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+An incomplete SMS sending service for ReNet sms. When I saw the project brief, I was both glad and unsure. Glad because it looked like a good excuse to finally learn Laravel, but unsure in that, the extent of my PHP development has been WordPress plugins and themes. Also, as a developer working primarily in front-end for the past two years, you can imagine my concern when reading "no front-end necessary"!
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+In my spare moments over the past week and a bit, I've been reading the Laravel docs. Over the past day and a bit, I've been trying to put into practice what I've read.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+I wasn't able to put much time into this, getting it functioning was my top priority. This came at the expense of code quality and good design decisions. Code should be split into more modular units, be more reusable, and the database model should have been designed better (I find myself traversing many relationships to get the info I need). Happy to point out all areas that are lacking, and what I should do instead.
 
-## Learning Laravel
+## Decisions
+- Laravel is likely overkill for this project since there is no front-end. I did consider Symfony, but have been meaning to learn Laravel.
+- I interpreted testing from CLI to mean either writing PHP unit tests, or a cli client of sorts. I chose the latter, utilising php artisan commands.
+- I interpreted the bulk of the task as being an API, with the cli commands hitting the API (in most cases).
+- I envision 'Product' to be the top of the hierarchy, with 'Tenants'/Users as children. By default, Users are unique by email address, but I've made them unique by a combination of email and product_id. This is because a user with the same email could register for multiple products.
+- Theres a one-to-one correlation between users and phone-numbers (I haven't explicitly defined this in the user model).
+- Changing sms service providers happens on the product level. So the provider for the product is changed, and all containing users/tenants send messages through the new provider. I've ignored the fact that switching providers would probably change phone numbers.
+- Since there was a note that third-party services code isn't important, this fell to the bottom of the priority list. I just gave the service providers a fail_rate, and dispatched an event when a message is sent. The event listener is the "service provider", and just updates the status of the message and assigns billing rates.
+- Following on from the previous point, I should have created an API for the service provider, taking as input the webhook url, which returns a UUID and current status. Then update the message status when the webhook is hit.
+- Left authentication out altogther.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Installation
+- Clone repository to local machine: git clone url
+- Move to project directory: cd renet_sms
+- Install dependencies: composer install
+- Seed database: php artisan migrate:fresh --seed
+- Serve on localhost: php artisan serve
 
-## Laravel Sponsors
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+## Usage
+- Since API is incomplete, adding different service providers/products/etc should be done in app/database/seeders/DatabaseSeeder.php followed by a php artisan migrate:fresh --seed
+- Limited validation and error handling. Go easy :)
+- Can use cli commands to hit the API, or your favourite API tester. Check routes in routes/api.php
 
-### Premium Partners
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+## Commands
+All commands preceeded by "php artisan". If unsure of expected parameters, use "php artisan help scope:command
 
-## Contributing
+products:changeprovider - Change a products SMS provider 
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+products:list - Get a list of existing products 
 
-## Code of Conduct
+providers:list - Get a list of sms providers 
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+sms:list - List sms messages. 
 
-## Security Vulnerabilities
+sms:send - Send SMS from tenant
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Challenges
+- Limited time.
+- building more advanced db queries. Particularly ( (whereConditionA) && ( whereConditionB || whereConditionC ) )
+conditional api resources depending on endpoint. Less of a challenge more a question of best practice.
+- Defining database model as I was coding was a mistake. Should redesign the tables and their relationships.
 
-## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Todo
+- Endpoint and command validation
+- Error handling on endpoints and commands
+- Make SMS provider its own API, rather than a simple event listener that changes the message status directly on the db.
+- Create exception handler so that internal errors are returned as json objects, not as blade templates.
+- Ensure right HTTP response is being returned.
+- Split controller code into functions. Increase reusability (table generating code is good example)
+- Redesign db model and relationships
