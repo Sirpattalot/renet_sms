@@ -41,6 +41,7 @@ class ListProducts extends Command
             $msgObj = (array) $msgObj;
         }
 
+        //shouldn't hardcode table headings
          $this->table(
              ['ID', 'Name', 'Provider ID'],
              $products
