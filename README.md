@@ -50,9 +50,11 @@ products:list - Get a list of existing products
 
 providers:list - Get a list of sms providers 
 
-sms:list - List sms messages. 
+sms:list - List sms messages
 
 sms:send - Send SMS from tenant
+
+users:list - List users and their phone numbers
 
 ## Challenges
 - Limited time.
